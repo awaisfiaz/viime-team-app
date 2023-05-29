@@ -334,7 +334,7 @@ const Table = ({
 
   return (
     <>
-      <table className="table-auto divide-y divide-gray-200 w-max m-4">
+      <table className="table-auto divide-y divide-gray-200 w-full sm:w-max m-4">
         <thead>
           <tr>
             {columns.map((column, i) => (

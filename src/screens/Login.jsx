@@ -11,8 +11,8 @@ function Login() {
   };
 
   return (
-    <div className="login-background flex items-center justify-center h-screen font-poppins">
-      <div className="login-card flex flex-col items-center justify-center py-10 px-8">
+    <div className="login-background flex items-center justify-center min-h-screen font-poppins">
+      <div className="login-card flex flex-col items-center justify-center py-6 px-4 sm:py-10 sm:px-8 w-full sm:w-auto">
         <img src={logo} alt="Logo" className="mb-4" />
         <p className="text-center text-gray-500 mb-8">
           Enter your email and password below

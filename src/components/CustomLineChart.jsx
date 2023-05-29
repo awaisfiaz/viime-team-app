@@ -21,7 +21,7 @@ const data = [
 ];
 
 const CustomLineChart = () => (
-  <ResponsiveContainer width="89%" height={200}>
+  <ResponsiveContainer width="89%" height={175}>
     <LineChart
       data={data}
       margin={{

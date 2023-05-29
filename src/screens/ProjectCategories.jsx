@@ -42,7 +42,7 @@ const ProjectCategories = () => {
   return (
     <div className="screen-background min-h-screen flex">
       <Sidebar />
-      <div className="flex flex-col w-full ml-70">
+      <div className="screen-background flex flex-col w-full ml-70">
         <div className="flex justify-between items-center px-4 py-2 mt-3">
           <h1 className="text-black text-lg font-roboto tracking-wide">
             <b>PROJECT CATEGORIES</b> / VIEW

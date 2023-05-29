@@ -82,7 +82,7 @@ const Dashboard = () => {
             Add New Project
           </button>
         </div>
-        <div className="flex justify-between items-center px-4 space-x-4 mt-6">
+        <div className="flex justify-between items-center px-4 space-x-4 mt-5">
           {stats1.map((stat, i) => (
             <div
               className={`flex flex-col items-center justify-center rounded p-2 w-1/4 text-white ${bgColors1[i]}`}
@@ -93,7 +93,7 @@ const Dashboard = () => {
             </div>
           ))}
         </div>
-        <div className="flex justify-between items-center px-4 space-x-4 mt-6">
+        <div className="flex justify-between items-center px-4 space-x-4 mt-4">
           <div
             className={`flex flex-col items-center justify-center rounded p-2 w-1/2 text-white ${"bg-custom-blue"}`}
           >
@@ -109,7 +109,7 @@ const Dashboard = () => {
             <CircularProgressBar percentage={32} size="30%" />
           </div>
         </div>
-        <div className="flex justify-between items-center px-4 space-x-4 mt-6">
+        <div className="flex justify-between items-center px-4 space-x-4 mt-4">
           {stats3.map((stat, i) => (
             <div
               className={`flex flex-col items-center justify-center rounded p-2 w-1/2 text-white ${bgColors3[i]}`}
@@ -121,6 +121,20 @@ const Dashboard = () => {
           ))}
         </div>
       </div>
+      <style jsx>{`
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background-color: #5a5a5a;
+          border-radius: 20px;
+        }
+      `}</style>
     </div>
   );
 };
