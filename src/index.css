@@ -1,0 +1,52 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+.table-fixed {
+  table-layout: fixed;
+}
+
+@layer components {
+  .input-description {
+    width: 161.76px;
+    height: 15px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.6rem; 
+    line-height: 15px;
+    color: #000000;
+  }
+  .input-hint {
+    width: 277.22px;
+    height: 15px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.6rem; 
+    line-height: 15px;
+    color: #868181;
+  }
+
+  .login-background {
+    @apply bg-login-bg;
+  }
+  .login-card {
+    @apply bg-white p-10  rounded;
+    width: 25%;
+    height: 60%;
+  }
+  .sidebar {
+    @apply bg-sidebar-bg flex flex-col items-start p-4 absolute w-70 left-0 top-0 bottom-0 rounded-none;
+  }
+  .sidebar-item {
+    @apply flex flex-row items-center px-4 py-2 gap-2 w-62 h-12 text-white rounded;
+  }
+  .sidebar-item:hover {
+    @apply bg-purple-700;
+  }
+  .screen-background {
+    @apply bg-screen-bg;
+  }
+}
+
+
+
+
+
