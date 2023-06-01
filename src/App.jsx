@@ -6,19 +6,23 @@ import Dashboard from "./screens/Dashboard";
 import Projects from "./screens/Projects";
 import Backers from "./screens/Backers";
 import ProjectCategories from "./screens/ProjectCategories";
+import { ApolloProvider } from "@apollo/client";
+import client from "./apollo";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/backers" element={<Backers />} />
-        <Route path="/project-categories" element={<ProjectCategories />} />
-      </Routes>
-    </Router>
+    <ApolloProvider client={client}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/backers" element={<Backers />} />
+          <Route path="/project-categories" element={<ProjectCategories />} />
+        </Routes>
+      </Router>
+    </ApolloProvider>
   );
 }
 

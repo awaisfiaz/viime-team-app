@@ -1,40 +1,95 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import Table from "../components/Table";
+import { useSubscription } from "@apollo/client";
+import { PROJECTS_SUBSCRIPTION } from "../graphQl/subscriptions";
+import { useQuery } from "@apollo/client";
+import { PROJECT_QUERY } from "../graphQl/queries";
+import { DELETE_PROJECT } from "../graphQl/mutations";
+import { useMutation } from "@apollo/client";
+import Toast from "../components/Toast";
 
 const Projects = () => {
+  const { data, loading, error } = useSubscription(PROJECTS_SUBSCRIPTION);
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [tableType, setTableType] = useState("PROJECTS");
+  const [viewedProjectId, setViewedProjectId] = useState(null);
+  const [toDeleteProjectId, setToDeleteProjectId] = useState(null);
+  const {
+    data: viewedProject,
+    loading: projectLoading,
+    error: projectError,
+  } = useQuery(PROJECT_QUERY, {
+    skip: !viewedProjectId,
+    variables: { id: viewedProjectId },
+  });
+
+  const [toast, setToast] = useState(null);
+
+  const [deleteProject] = useMutation(DELETE_PROJECT, {
+    variables: { id: toDeleteProjectId },
+    onCompleted(res) {
+      setToast({
+        title: "Project Details Deleted",
+        description: "Detail Deleted",
+        status: "success",
+      });
+    },
+    onError(err) {
+      setToast({
+        title: "Failed",
+        description: `Error occurred ${err.message}`,
+        status: "error",
+      });
+    },
+  });
+
+  useEffect(() => {
+    if (!projectLoading && !projectError && viewedProject) {
+      // setViewedProject is not necessary because viewedProject is already in your state.
+    }
+  }, [viewedProject, projectLoading, projectError]);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
 
   const columns = ["No", "Project Title", "Project Description", "Actions"];
-  const data = [
-    ["01", "Project1", "Description1"],
-    ["02", "Project2", "Description2"],
-    ["02", "Project3", "Description3"],
-  ];
 
-  const viewAction = () => {
+  const tableData = data.projects.map((project, index) => [
+    `${index + 1}`,
+    project.title,
+    project.description,
+  ]);
+
+  const createViewAction = (projectId) => () => {
     setModalType("VIEW");
     setShowModal(true);
+    setViewedProjectId(projectId);
   };
 
-  const editAction = () => {
+  const createEditAction = (projectId) => () => {
     setModalType("EDIT");
     setShowModal(true);
+    setViewedProjectId(projectId);
   };
 
-  const deleteAction = () => {
+  const createDeleteAction = (projectId) => () => {
     setModalType("DELETE");
     setShowModal(true);
+    setToDeleteProjectId(projectId);
   };
+
+  const actions = data.projects.map((project) => [
+    createViewAction(project.id),
+    createEditAction(project.id),
+    createDeleteAction(project.id),
+  ]);
 
   const addNewProject = () => {
     setModalType("ADD");
     setShowModal(true);
   };
-
-  const actions = [viewAction, editAction, deleteAction];
 
   return (
     <div className="screen-background min-h-screen flex">
@@ -51,15 +106,28 @@ const Projects = () => {
             Add New Project
           </button>
         </div>
+        {toast && (
+          <Toast
+            key={toast.title}
+            title={toast.title}
+            description={toast.description}
+            status={toast.status}
+          />
+        )}
         <div className="mt-4">
           <Table
             columns={columns}
-            data={data}
+            data={tableData}
             actions={actions}
             showModal={showModal}
             setShowModal={setShowModal}
             modalType={modalType}
             tableType={tableType}
+            viewedProjectId={viewedProjectId}
+            viewedProject={viewedProject?.projects_by_pk}
+            toDeleteProjectId={toDeleteProjectId}
+            deleteProject={deleteProject}
+            setToast={setToast}
           />
         </div>
       </div>
