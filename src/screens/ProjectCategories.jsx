@@ -43,7 +43,10 @@ const ProjectCategories = () => {
     <div className="screen-background min-h-screen flex">
       <Sidebar />
       <div className="screen-background flex flex-col w-full overflow-auto overscroll-x-auto">
-        <div className="flex justify-between items-center px-4 py-2 mt-3">
+        <h1 className="text-black text-lg font-roboto tracking-wide">
+          Work in Progress...
+        </h1>
+        {/* <div className="flex justify-between items-center px-4 py-2 mt-3">
           <h1 className="text-black text-lg font-roboto tracking-wide">
             <b>PROJECT CATEGORIES</b> / VIEW
           </h1>
@@ -64,7 +67,7 @@ const ProjectCategories = () => {
             modalType={modalType}
             tableType={tableType}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );
