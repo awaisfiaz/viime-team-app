@@ -8,6 +8,7 @@ import { PROJECT_QUERY } from "../graphQl/queries";
 import { DELETE_PROJECT } from "../graphQl/mutations";
 import { useMutation } from "@apollo/client";
 import Toast from "../components/Toast";
+import Spinner from "../components/Spinner";
 
 const Projects = () => {
   const { data, loading, error } = useSubscription(PROJECTS_SUBSCRIPTION);
@@ -51,7 +52,7 @@ const Projects = () => {
     }
   }, [viewedProject, projectLoading, projectError]);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Spinner />;
   if (error) return <p>Error: {error.message}</p>;
 
   const columns = ["No", "Project Title", "Project Description", "Actions"];
