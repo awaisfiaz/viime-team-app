@@ -1,17 +1,37 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import logo from "../assets/login-logo.svg";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebaseConfig";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Login() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    navigate("/dashboard");
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        var user = userCredential.user;
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        console.error("Login failed:", errorCode, errorMessage);
+        toast.error(errorMessage, {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      });
   };
 
   return (
     <div className="login-background flex items-center justify-center min-h-screen font-poppins">
+      <ToastContainer />
       <div className="login-card flex flex-col items-center justify-center py-6 px-4 sm:py-10 sm:px-8 w-full sm:w-auto">
         <img src={logo} alt="Logo" className="mb-4" />
         <p className="text-center text-gray-500 mb-8">
@@ -24,6 +44,8 @@ function Login() {
               name="email"
               placeholder="Email"
               className="px-4 py-2 w-full border bg-white rounded"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="my-4">
@@ -35,6 +57,8 @@ function Login() {
               name="password"
               placeholder="Password"
               className="px-4 py-2 w-full border bg-white rounded"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <button
