@@ -4,26 +4,33 @@ export const PROJECTS_SUBSCRIPTION = gql`
   subscription MySubscription {
     projects(order_by: { created_at: desc }) {
       id
-      name
-      email
       title
       description
-      faqs
-      updates
-      subtitles
-      aime_ventures_backing
-      project_category
-      launch_date
-      project_start_date
-      project_end_date
-      project_image
-      project_video
-      subscriptions_available
-      subscriptions_secured
-      subscriptions_remaining
-      total_raised
-      total_remaining
-      aime_invested_total
+    }
+  }
+`;
+
+export const BACKERS_SUBSCRIPTION = gql`
+  subscription MySubscription {
+    backers(order_by: { created_at: desc }) {
+      id
+      order_number
+      member_name
+      project_name
+      status
+      pledge_money
+      backers_description
+      estimated_delivery_date
+    }
+  }
+`;
+
+export const CATEGORIES_SUBSCRIPTION = gql`
+  subscription MySubscription {
+    categories(order_by: { created_at: desc }) {
+      id
+      project_category_id
+      project_category_title
     }
   }
 `;

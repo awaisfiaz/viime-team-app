@@ -10,24 +10,42 @@ const Modal = ({
   createProject,
   updateProject,
   deleteProject,
-  toDeleteProjectId,
-  setToast,
+  createBacker,
+  updateBacker,
+  deleteBacker,
+  createCategory,
+  updateCategory,
+  deleteCategory,
   children,
 }) => {
   const navigate = useNavigate();
 
+  const handlers = {
+    PROJECTS: {
+      DELETE: deleteProject,
+      EDIT: updateProject,
+      ADD: createProject,
+    },
+    BACKERS: {
+      DELETE: deleteBacker,
+      EDIT: updateBacker,
+      ADD: createBacker,
+    },
+    CATEGORIES: {
+      DELETE: deleteCategory,
+      EDIT: updateCategory,
+      ADD: createCategory,
+    },
+  };
+
   const handleDelete = () => {
-    deleteProject();
+    handlers[tableType]?.DELETE?.();
     handleClose();
   };
 
   const handleUpload = (e) => {
     e.preventDefault();
-    if (modalType === "EDIT") {
-      updateProject();
-    } else {
-      createProject();
-    }
+    handlers[tableType]?.[modalType]?.();
     setShowModal(false);
   };
 
@@ -52,7 +70,7 @@ const Modal = ({
                 ? "top-1/2 transform -translate-y-1/2"
                 : "top-16"
             } bg-screen-bg rounded-md shadow-lg p-10 w-11/12 ${
-              modalType === "DELETE" || tableType === "PROJECT CATEGORIES"
+              modalType === "DELETE" || tableType === "CATEGORIES"
                 ? "max-w-lg"
                 : "max-w-4xl"
             } z-20 overflow-y-auto`}

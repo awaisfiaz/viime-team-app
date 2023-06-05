@@ -5,7 +5,7 @@ function Toast({ title, description, status }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setVisible(false);
-    }, 5000);
+    }, 2000);
     return () => clearTimeout(timer);
   }, []);
 

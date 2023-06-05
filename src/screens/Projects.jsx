@@ -48,7 +48,6 @@ const Projects = () => {
 
   useEffect(() => {
     if (!projectLoading && !projectError && viewedProject) {
-      // setViewedProject is not necessary because viewedProject is already in your state.
     }
   }, [viewedProject, projectLoading, projectError]);
 
@@ -126,7 +125,6 @@ const Projects = () => {
             tableType={tableType}
             viewedProjectId={viewedProjectId}
             viewedProject={viewedProject?.projects_by_pk}
-            toDeleteProjectId={toDeleteProjectId}
             deleteProject={deleteProject}
             setToast={setToast}
           />

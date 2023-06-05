@@ -5,12 +5,17 @@ import DateIcon from "./icons/DateIcon";
 import DeleteIcon from "./icons/DeleteIcon";
 import ImageIcon from "./icons/ImageIcon";
 import DropdownIcon from "./icons/DropdownIcon";
-import Toast from "./Toast";
 
 import Modal from "./Modal";
 import { useMutation } from "@apollo/client";
-import { INSERT_PROJECT } from "../graphQl/mutations";
-import { UPDATE_PROJECT } from "../graphQl/mutations";
+import {
+  INSERT_PROJECT,
+  UPDATE_PROJECT,
+  INSERT_BACKER,
+  UPDATE_BACKER,
+  INSERT_CATEGORY,
+  UPDATE_CATEGORY,
+} from "../graphQl/mutations";
 
 const Table = ({
   columns,
@@ -22,8 +27,13 @@ const Table = ({
   tableType,
   viewedProjectId,
   viewedProject,
-  toDeleteProjectId,
   deleteProject,
+  viewedBackerId,
+  viewedBacker,
+  deleteBacker,
+  viewedCategoryId,
+  viewedCategory,
+  deleteCategory,
   setToast,
 }) => {
   // Projects UseSates
@@ -80,6 +90,75 @@ const Table = ({
     viewedProject ? viewedProject.aime_invested_total : ""
   );
 
+  // Backers UseSates
+  const [orderNumber, setOrderNumber] = useState(
+    viewedBacker ? viewedBacker.order_number : ""
+  );
+  const [memberName, setMemberName] = useState(
+    viewedBacker ? viewedBacker.member_name : ""
+  );
+  const [projectName, setProjectName] = useState(
+    viewedBacker ? viewedBacker.project_name : ""
+  );
+  const [status, setStatus] = useState(viewedBacker ? viewedBacker.status : "");
+  const [status2, setStatus2] = useState(
+    viewedBacker ? viewedBacker.status_2 : ""
+  );
+  const [pledgeMoney, setPledgeMoney] = useState(
+    viewedBacker ? viewedBacker.pledge_money : ""
+  );
+  const [backerDescription, setBackerDescription] = useState(
+    viewedBacker ? viewedBacker.backers_description : ""
+  );
+  const [estimatedDeliveryDate, setEstimatedDeliveryDate] = useState(
+    viewedBacker ? viewedBacker.estimated_delivery_date : null
+  );
+
+  // Category UseStates
+
+  const [categoryId, setCategoryId] = useState(
+    viewedCategory ? viewedCategory.project_category_id : ""
+  );
+  const [categoryTitle, setCategoryTitle] = useState(
+    viewedCategory ? viewedCategory.project_category_title : ""
+  );
+
+  // Category UseEffect
+
+  useEffect(() => {
+    if (viewedCategory && (modalType === "VIEW" || modalType === "EDIT")) {
+      setCategoryId(viewedCategory.project_category_id);
+      setCategoryTitle(viewedCategory.project_category_title);
+    } else if (modalType === "ADD") {
+      setCategoryId("");
+      setCategoryTitle("");
+    }
+  }, [viewedCategory, modalType]);
+
+  // Backers UseEffect
+  useEffect(() => {
+    if (viewedBacker && (modalType === "VIEW" || modalType === "EDIT")) {
+      setOrderNumber(viewedBacker.order_number);
+      setMemberName(viewedBacker.member_name);
+      setProjectName(viewedBacker.project_name);
+      setStatus(viewedBacker.status);
+      setStatus2(viewedBacker.status_2);
+      setPledgeMoney(viewedBacker.pledge_money);
+      setBackerDescription(viewedBacker.backers_description);
+      setEstimatedDeliveryDate(viewedBacker.estimated_delivery_date);
+    } else if (modalType === "ADD") {
+      setOrderNumber("");
+      setMemberName("");
+      setProjectName("");
+      setStatus("");
+      setStatus2("");
+      setPledgeMoney("");
+      setBackerDescription("");
+      setEstimatedDeliveryDate(null);
+    }
+  }, [viewedBacker, modalType]);
+
+  // Projects UseEffect
   useEffect(() => {
     if (viewedProject && (modalType === "VIEW" || modalType === "EDIT")) {
       setName(viewedProject.name);
@@ -125,6 +204,112 @@ const Table = ({
       setAimeInvestedTotal("");
     }
   }, [viewedProject, modalType]);
+
+  const [createCategory] = useMutation(INSERT_CATEGORY, {
+    variables: {
+      object: {
+        project_category_id: categoryId,
+        project_category_title: categoryTitle,
+      },
+    },
+    onCompleted(res) {
+      setToast({
+        title: "Category Details Uploaded",
+        description: "Detail Upload",
+        status: "success",
+      });
+    },
+    onError(err) {
+      setToast({
+        title: "Failed",
+        description: `Error occurred ${err.message}`,
+        status: "error",
+      });
+    },
+  });
+
+  const [updateCategory] = useMutation(UPDATE_CATEGORY, {
+    variables: {
+      id: viewedCategoryId,
+      object: {
+        project_category_id: categoryId,
+        project_category_title: categoryTitle,
+      },
+    },
+    onCompleted(res) {
+      setToast({
+        title: "Category Details Updated",
+        description: "Detail Updated",
+        status: "success",
+      });
+    },
+    onError(err) {
+      setToast({
+        title: "Failed",
+        description: `Error occurred ${err.message}`,
+        status: "error",
+      });
+    },
+  });
+
+  const [createBacker] = useMutation(INSERT_BACKER, {
+    variables: {
+      object: {
+        order_number: orderNumber,
+        member_name: memberName,
+        project_name: projectName,
+        status: status,
+        status_2: status2,
+        pledge_money: pledgeMoney,
+        backers_description: backerDescription,
+        estimated_delivery_date: estimatedDeliveryDate,
+      },
+    },
+    onCompleted(res) {
+      setToast({
+        title: "Backer Details Uploaded",
+        description: "Detail Upload",
+        status: "success",
+      });
+    },
+    onError(err) {
+      setToast({
+        title: "Failed",
+        description: `Error occurred ${err.message}`,
+        status: "error",
+      });
+    },
+  });
+
+  const [updateBacker] = useMutation(UPDATE_BACKER, {
+    variables: {
+      id: viewedBackerId,
+      object: {
+        order_number: orderNumber,
+        member_name: memberName,
+        project_name: projectName,
+        status: status,
+        status_2: status2,
+        pledge_money: pledgeMoney,
+        backers_description: backerDescription,
+        estimated_delivery_date: estimatedDeliveryDate,
+      },
+    },
+    onCompleted(res) {
+      setToast({
+        title: "Backer Details Updated",
+        description: "Detail Updated",
+        status: "success",
+      });
+    },
+    onError(err) {
+      setToast({
+        title: "Failed",
+        description: `Error occurred ${err.message}`,
+        status: "error",
+      });
+    },
+  });
 
   const [createProject] = useMutation(INSERT_PROJECT, {
     variables: {
@@ -270,9 +455,13 @@ const Table = ({
         tableType={tableType}
         createProject={createProject}
         updateProject={updateProject}
-        toDeleteProjectId={toDeleteProjectId}
         deleteProject={deleteProject}
-        setToast={setToast}
+        createBacker={createBacker}
+        updateBacker={updateBacker}
+        deleteBacker={deleteBacker}
+        createCategory={createCategory}
+        updateCategory={updateCategory}
+        deleteCategory={deleteCategory}
       >
         {/* Modal Content */}
         {tableType === "PROJECTS" && (
@@ -572,66 +761,108 @@ const Table = ({
               <label className="text-xs font-sailec font-semibold mb-2">
                 ORDER NUMBER
               </label>
-              <input className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white" />
+              <input
+                value={orderNumber}
+                onChange={(e) => setOrderNumber(e.target.value)}
+                className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white"
+              />
             </div>
             <div className="flex flex-col mx-auto md:w-1/2 px-2 mb-4">
               <label className="text-xs font-sailec font-semibold mb-2 pt-2">
                 PROJECT NAME
               </label>
-              <input className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white" />
+              <input
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white"
+              />
             </div>
             <div className="flex flex-col mx-auto md:w-1/2 px-2 mb-4 -ml-2 pt-2">
               <label className="text-xs font-sailec font-semibold mb-2">
                 MEMBER NAME
               </label>
-              <input className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white" />
+              <input
+                value={memberName}
+                onChange={(e) => setMemberName(e.target.value)}
+                className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white"
+              />
             </div>
             <div className="flex flex-col mx-auto md:w-1/2 px-2 mb-4">
               <label className="text-xs font-sailec font-semibold mb-2 pt-2">
                 STATUS
               </label>
-              <input className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white" />
+              <input
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white"
+              />
             </div>
             <div className="flex flex-col mx-auto md:w-1/2 px-2 mb-4 -ml-2 pt-2">
               <label className="text-xs font-sailec font-semibold mb-2">
                 PLEDGE MONEY
               </label>
-              <input className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white" />
+              <input
+                value={pledgeMoney}
+                onChange={(e) => setPledgeMoney(e.target.value)}
+                className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white"
+              />
             </div>
             <div className="flex flex-col mx-auto md:w-1/2 px-2 mb-4">
               <label className="text-xs font-sailec font-semibold mb-2 pt-2">
                 STATUS
               </label>
-              <input className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white" />
+              <input
+                value={status2}
+                onChange={(e) => setStatus2(e.target.value)}
+                className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white"
+              />
             </div>
             <div className="flex flex-col mx-auto md:w-1/2 px-2 mb-4 -ml-2 pt-2">
               <label className="text-xs font-sailec font-semibold mb-2 pt-3">
                 DESCRIPTION
               </label>
-              <textarea className="w-full h-[137px] px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white" />
+              <textarea
+                value={backerDescription}
+                onChange={(e) => setBackerDescription(e.target.value)}
+                className="w-full h-[137px] px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white"
+              />
             </div>
             <div className="flex flex-col mx-auto md:w-1/2 px-2 mb-4">
               <label className="text-xs font-sailec font-semibold mb-2 pt-2">
-                DESCRIPTION
+                Estimated Delivery Date
               </label>
-              <input className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white" />
+              <input
+                type="date"
+                id="estimated-delivery-date"
+                className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white appearance-none pr-8"
+                value={estimatedDeliveryDate}
+                onChange={(e) => setEstimatedDeliveryDate(e.target.value)}
+              />
             </div>
           </>
         )}
-        {tableType === "PROJECT CATEGORIES" && (
+        {tableType === "CATEGORIES" && (
           <>
             <div className="flex flex-col">
               <div className="flex flex-col mx-auto md:w-1/2 px-6 mb-4 -ml-2 pt-2">
                 <label className="text-xs font-sailec font-semibold leading-4 tracking-wide uppercase text-black mb-2 pt-3">
-                  PROJECT CATEGORY TITLE
+                  PROJECT CATEGORY ID
                 </label>
-                <input className="w-[365px] h-[56px] bg-white border border-[#202124] rounded-md px-3" />
+                <input
+                  value={categoryId}
+                  onChange={(e) => setCategoryId(e.target.value)}
+                  className="w-[365px] h-[56px] bg-white border border-[#202124] rounded-md px-3"
+                />
               </div>
               <div className="flex flex-col mx-auto md:w-1/2 px-6 mb-4 -ml-2 pt-2">
                 <label className="text-xs font-sailec font-semibold leading-4 tracking-wide uppercase text-black mb-2 pt-3">
-                  PROJECT CATEGORY ID
+                  PROJECT CATEGORY TITLE
                 </label>
-                <input className="w-[365px] h-[56px] bg-white border border-[#202124] rounded-md px-3" />
+                <input
+                  value={categoryTitle}
+                  onChange={(e) => setCategoryTitle(e.target.value)}
+                  className="w-[365px] h-[56px] bg-white border border-[#202124] rounded-md px-3"
+                />
               </div>
             </div>
           </>
