@@ -18,11 +18,12 @@ const Modal = ({
   deleteCategory,
   projectCategoryFile,
   uploadImage,
+  imageUrl,
   setImageUrl,
   children,
 }) => {
   const navigate = useNavigate();
-  const [isReadyToUpdate, setIsReadyToUpdate] = useState(false);
+  const [isModalSubmitted, setIsModalSubmitted] = useState(false);
 
   const handlers = {
     PROJECTS: {
@@ -42,49 +43,74 @@ const Modal = ({
     },
   };
 
+  useEffect(() => {
+    if (
+      isModalSubmitted &&
+      modalType !== "DELETE" &&
+      (imageUrl || !projectCategoryFile)
+    ) {
+      handlers[tableType]?.[modalType]?.();
+      setShowModal(false);
+      setIsModalSubmitted(false); // Reset the isModalSubmitted state
+    }
+  }, [
+    imageUrl,
+    projectCategoryFile,
+    modalType,
+    setShowModal,
+    handlers,
+    tableType,
+    isModalSubmitted,
+  ]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsModalSubmitted(true);
+    handleUpload();
+  };
+
   const handleDelete = () => {
     handlers[tableType]?.DELETE?.();
     handleClose();
   };
 
   const handleUpload = async (e) => {
-    e.preventDefault();
-
     const uploadAndCreateProject = async () => {
       if (
         (modalType === "ADD" || modalType === "EDIT") &&
-        tableType === "PROJECTS"
+        tableType === "PROJECTS" &&
+        projectCategoryFile
       ) {
-        if (projectCategoryFile) {
-          try {
-            const uploadedImageUrl = await uploadImage(projectCategoryFile);
-            if (!uploadedImageUrl) {
-              console.error("Image upload failed: No URL returned");
-            } else {
-              setImageUrl(uploadedImageUrl); // set the imageUrl state in Tables.jsx
-            }
-          } catch (error) {
-            console.error("Image upload failed:", error);
+        try {
+          const uploadedImageUrl = await uploadImage(projectCategoryFile);
+          if (!uploadedImageUrl) {
+            console.error("Image upload failed: No URL returned");
+          } else {
+            setImageUrl(uploadedImageUrl); // set the imageUrl state in Tables.jsx
+            return true;
           }
+        } catch (error) {
+          console.error("Image upload failed:", error);
         }
       }
+      return false;
     };
 
-    // if projectCategoryFile exists, only then call uploadAndCreateProject
     if (projectCategoryFile) {
       await uploadAndCreateProject();
+    } else {
+      setImageUrl(null);
     }
-
-    // whether the image upload was successful, or there was no image to upload, we continue with the next operation
-    handlers[tableType]?.[modalType]?.();
-    setShowModal(false);
   };
 
-  // const handleUpload = (e) => {
+  // const handleUpload = async (e) => {
   //   e.preventDefault();
 
   //   const uploadAndCreateProject = async () => {
-  //     if (modalType === "ADD" && tableType === "PROJECTS") {
+  //     if (
+  //       (modalType === "ADD" || modalType === "EDIT") &&
+  //       tableType === "PROJECTS"
+  //     ) {
   //       if (projectCategoryFile) {
   //         try {
   //           const uploadedImageUrl = await uploadImage(projectCategoryFile);
@@ -100,10 +126,14 @@ const Modal = ({
   //     }
   //   };
 
-  //   uploadAndCreateProject().then(() => {
-  //     handlers[tableType]?.[modalType]?.();
-  //     setShowModal(false);
-  //   });
+  //   // if projectCategoryFile exists, only then call uploadAndCreateProject
+  //   if (projectCategoryFile) {
+  //     await uploadAndCreateProject();
+  //   }
+
+  //   // whether the image upload was successful, or there was no image to upload, we continue with the next operation
+  //   handlers[tableType]?.[modalType]?.();
+  //   setShowModal(false);
   // };
 
   const handleClose = () => {
@@ -182,7 +212,7 @@ const Modal = ({
                 </button>
                 <button
                   className="flex flex-row items-center justify-center gap-2 w-11 h-8 bg-blue-700 rounded text-white text-sm font-semibold px-8 py-5 mr-6"
-                  onClick={(e) => handleUpload(e)}
+                  onClick={(e) => handleSubmit(e)}
                 >
                   Save
                 </button>

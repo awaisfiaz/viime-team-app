@@ -504,6 +504,7 @@ const Table = ({
         deleteCategory={deleteCategory}
         projectCategoryFile={projectCategoryFile}
         uploadImage={uploadImage}
+        imageUrl={imageUrl}
         setImageUrl={setImageUrl}
       >
         {/* Modal Content */}
