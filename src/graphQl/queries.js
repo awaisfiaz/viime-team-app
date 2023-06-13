@@ -53,3 +53,12 @@ export const CATEGORY_QUERY = gql`
     }
   }
 `;
+
+export const GET_CATEGORIES = gql`
+  query GetCategories {
+    categories {
+      id
+      project_category_title
+    }
+  }
+`;

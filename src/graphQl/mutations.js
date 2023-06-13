@@ -24,6 +24,7 @@ export const INSERT_PROJECT = gql`
       total_raised
       total_remaining
       aime_invested_total
+      category_id
     }
   }
 `;

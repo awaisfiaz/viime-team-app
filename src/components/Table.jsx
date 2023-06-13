@@ -8,6 +8,8 @@ import DropdownIcon from "./icons/DropdownIcon";
 
 import Modal from "./Modal";
 import { useMutation } from "@apollo/client";
+import { useQuery } from "@apollo/client";
+import { GET_CATEGORIES } from "../graphQl/queries";
 import {
   INSERT_PROJECT,
   UPDATE_PROJECT,
@@ -16,6 +18,13 @@ import {
   INSERT_CATEGORY,
   UPDATE_CATEGORY,
 } from "../graphQl/mutations";
+import Spinner from "./Spinner";
+
+function useConditionalQuery(condition, query) {
+  return condition
+    ? useQuery(query)
+    : { data: null, loading: false, error: null };
+}
 
 const Table = ({
   columns,
@@ -88,6 +97,10 @@ const Table = ({
   );
   const [aimeInvestedTotal, setAimeInvestedTotal] = useState(
     viewedProject ? viewedProject.aime_invested_total : ""
+  );
+
+  const [selectedCategoryId, setSelectedCategoryId] = useState(
+    viewedProject ? viewedProject.category_id : null
   );
 
   // Backers UseSates
@@ -181,6 +194,7 @@ const Table = ({
       setTotalRaised(viewedProject.total_raised);
       setTotalRemaining(viewedProject.total_remaining);
       setAimeInvestedTotal(viewedProject.aime_invested_total);
+      setSelectedCategoryId(viewedProject.category_id);
     } else if (modalType === "ADD") {
       setName("");
       setEmail("");
@@ -202,6 +216,7 @@ const Table = ({
       setTotalRaised("");
       setTotalRemaining("");
       setAimeInvestedTotal("");
+      setSelectedCategoryId(null);
     }
   }, [viewedProject, modalType]);
 
@@ -334,6 +349,7 @@ const Table = ({
         total_raised: totalRaised,
         total_remaining: totalRemaining,
         aime_invested_total: aimeInvestedTotal,
+        category_id: selectedCategoryId,
       },
     },
     onCompleted(res) {
@@ -393,6 +409,11 @@ const Table = ({
       });
     },
   });
+
+  const { data: queryData } = useConditionalQuery(
+    tableType === "PROJECTS",
+    GET_CATEGORIES
+  );
 
   function handleClick(e) {
     e.preventDefault();
@@ -576,11 +597,24 @@ const Table = ({
                   id="project-category"
                   className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white appearance-none pr-8"
                   value={projectCategory}
-                  onChange={(e) => setProjectCategory(e.target.value)}
+                  onChange={(e) => {
+                    const selectedCategory = queryData?.categories?.find(
+                      (category) =>
+                        category.project_category_title === e.target.value
+                    );
+                    setSelectedCategoryId(selectedCategory?.id);
+                    setProjectCategory(e.target.value);
+                  }}
                 >
                   <option value="">Select</option>
-                  <option value="yes">YES</option>
-                  <option value="no">NO</option>
+                  {queryData?.categories?.map((category) => (
+                    <option
+                      key={category.id}
+                      value={category.project_category_title}
+                    >
+                      {category.project_category_title}
+                    </option>
+                  ))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                   <DropdownIcon />
