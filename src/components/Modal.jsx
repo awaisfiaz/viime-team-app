@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import CrossIcon from "./icons/CrossIcon";
 import { useNavigate } from "react-router-dom";
 
@@ -22,6 +22,7 @@ const Modal = ({
   children,
 }) => {
   const navigate = useNavigate();
+  const [isReadyToUpdate, setIsReadyToUpdate] = useState(false);
 
   const handlers = {
     PROJECTS: {
@@ -50,14 +51,18 @@ const Modal = ({
     e.preventDefault();
 
     const uploadAndCreateProject = async () => {
-      if (modalType === "ADD" && tableType === "PROJECTS") {
+      if (
+        (modalType === "ADD" || modalType === "EDIT") &&
+        tableType === "PROJECTS"
+      ) {
         if (projectCategoryFile) {
           try {
             const uploadedImageUrl = await uploadImage(projectCategoryFile);
             if (!uploadedImageUrl) {
               console.error("Image upload failed: No URL returned");
             } else {
-              setImageUrl(uploadedImageUrl); // set the imageUrl state in Tables.jsx
+              setImageUrl(uploadedImageUrl);
+              setIsReadyToUpdate(true);
             }
           } catch (error) {
             console.error("Image upload failed:", error);
@@ -66,11 +71,16 @@ const Modal = ({
       }
     };
 
-    uploadAndCreateProject().then(() => {
+    uploadAndCreateProject();
+  };
+
+  useEffect(() => {
+    if (isReadyToUpdate) {
       handlers[tableType]?.[modalType]?.();
       setShowModal(false);
-    });
-  };
+      setIsReadyToUpdate(false);
+    }
+  }, [isReadyToUpdate]);
 
   const handleClose = () => {
     setShowModal(false);
