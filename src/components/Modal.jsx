@@ -16,6 +16,9 @@ const Modal = ({
   createCategory,
   updateCategory,
   deleteCategory,
+  projectCategoryFile,
+  uploadImage,
+  setImageUrl,
   children,
 }) => {
   const navigate = useNavigate();
@@ -45,8 +48,28 @@ const Modal = ({
 
   const handleUpload = (e) => {
     e.preventDefault();
-    handlers[tableType]?.[modalType]?.();
-    setShowModal(false);
+
+    const uploadAndCreateProject = async () => {
+      if (modalType === "ADD" && tableType === "PROJECTS") {
+        if (projectCategoryFile) {
+          try {
+            const uploadedImageUrl = await uploadImage(projectCategoryFile);
+            if (!uploadedImageUrl) {
+              console.error("Image upload failed: No URL returned");
+            } else {
+              setImageUrl(uploadedImageUrl); // set the imageUrl state in Tables.jsx
+            }
+          } catch (error) {
+            console.error("Image upload failed:", error);
+          }
+        }
+      }
+    };
+
+    uploadAndCreateProject().then(() => {
+      handlers[tableType]?.[modalType]?.();
+      setShowModal(false);
+    });
   };
 
   const handleClose = () => {

@@ -18,13 +18,31 @@ import {
   INSERT_CATEGORY,
   UPDATE_CATEGORY,
 } from "../graphQl/mutations";
-import Spinner from "./Spinner";
+import axios from "axios";
 
 function useConditionalQuery(condition, query) {
   return condition
     ? useQuery(query)
     : { data: null, loading: false, error: null };
 }
+
+const uploadImage = async (file) => {
+  const formData = new FormData();
+  formData.append("data", file);
+
+  try {
+    const response = await axios.post(
+      "https://zljk3i1jvl.execute-api.eu-west-2.amazonaws.com/TestingAPI/fileupload",
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+
+    return response.data.imageUrl;
+  } catch (error) {
+    console.error("Error uploading file: ", error);
+    return null;
+  }
+};
 
 const Table = ({
   columns,
@@ -102,6 +120,7 @@ const Table = ({
   const [selectedCategoryId, setSelectedCategoryId] = useState(
     viewedProject ? viewedProject.category_id : null
   );
+  const [imageUrl, setImageUrl] = useState(null);
 
   // Backers UseSates
   const [orderNumber, setOrderNumber] = useState(
@@ -341,7 +360,7 @@ const Table = ({
         launch_date: launchDate,
         project_start_date: projectStartDate,
         project_end_date: projectEndDate,
-        project_image: projectCategoryFile,
+        project_image: imageUrl,
         project_video: projectVideoFile,
         subscriptions_available: noOfSubscriptionsAvailable,
         subscriptions_secured: noOfSubscriptionsSecured,
@@ -384,7 +403,7 @@ const Table = ({
         launch_date: launchDate,
         project_start_date: projectStartDate,
         project_end_date: projectEndDate,
-        project_image: projectCategoryFile,
+        project_image: imageUrl,
         project_video: projectVideoFile,
         subscriptions_available: noOfSubscriptionsAvailable,
         subscriptions_secured: noOfSubscriptionsSecured,
@@ -483,6 +502,9 @@ const Table = ({
         createCategory={createCategory}
         updateCategory={updateCategory}
         deleteCategory={deleteCategory}
+        projectCategoryFile={projectCategoryFile}
+        uploadImage={uploadImage}
+        setImageUrl={setImageUrl}
       >
         {/* Modal Content */}
         {tableType === "PROJECTS" && (
