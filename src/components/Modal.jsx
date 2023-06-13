@@ -47,7 +47,7 @@ const Modal = ({
     handleClose();
   };
 
-  const handleUpload = (e) => {
+  const handleUpload = async (e) => {
     e.preventDefault();
 
     const uploadAndCreateProject = async () => {
@@ -61,8 +61,7 @@ const Modal = ({
             if (!uploadedImageUrl) {
               console.error("Image upload failed: No URL returned");
             } else {
-              setImageUrl(uploadedImageUrl);
-              setIsReadyToUpdate(true);
+              setImageUrl(uploadedImageUrl); // set the imageUrl state in Tables.jsx
             }
           } catch (error) {
             console.error("Image upload failed:", error);
@@ -71,16 +70,41 @@ const Modal = ({
       }
     };
 
-    uploadAndCreateProject();
+    // if projectCategoryFile exists, only then call uploadAndCreateProject
+    if (projectCategoryFile) {
+      await uploadAndCreateProject();
+    }
+
+    // whether the image upload was successful, or there was no image to upload, we continue with the next operation
+    handlers[tableType]?.[modalType]?.();
+    setShowModal(false);
   };
 
-  useEffect(() => {
-    if (isReadyToUpdate) {
-      handlers[tableType]?.[modalType]?.();
-      setShowModal(false);
-      setIsReadyToUpdate(false);
-    }
-  }, [isReadyToUpdate]);
+  // const handleUpload = (e) => {
+  //   e.preventDefault();
+
+  //   const uploadAndCreateProject = async () => {
+  //     if (modalType === "ADD" && tableType === "PROJECTS") {
+  //       if (projectCategoryFile) {
+  //         try {
+  //           const uploadedImageUrl = await uploadImage(projectCategoryFile);
+  //           if (!uploadedImageUrl) {
+  //             console.error("Image upload failed: No URL returned");
+  //           } else {
+  //             setImageUrl(uploadedImageUrl); // set the imageUrl state in Tables.jsx
+  //           }
+  //         } catch (error) {
+  //           console.error("Image upload failed:", error);
+  //         }
+  //       }
+  //     }
+  //   };
+
+  //   uploadAndCreateProject().then(() => {
+  //     handlers[tableType]?.[modalType]?.();
+  //     setShowModal(false);
+  //   });
+  // };
 
   const handleClose = () => {
     setShowModal(false);
