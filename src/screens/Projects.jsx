@@ -130,6 +130,20 @@ const Projects = () => {
           />
         </div>
       </div>
+      <style jsx>{`
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+          background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background-color: #5a5a5a;
+          border-radius: 20px;
+        }
+      `}</style>
     </div>
   );
 };

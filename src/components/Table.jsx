@@ -236,6 +236,7 @@ const Table = ({
       setTotalRemaining("");
       setAimeInvestedTotal("");
       setSelectedCategoryId(null);
+      setImageUrl(null);
     }
   }, [viewedProject, modalType]);
 
