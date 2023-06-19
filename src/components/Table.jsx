@@ -146,6 +146,9 @@ const Table = ({
   const [estimatedDeliveryDate, setEstimatedDeliveryDate] = useState(
     viewedBacker ? viewedBacker.estimated_delivery_date : null
   );
+  const [transactionAmount, setTransactionAmount] = useState(
+    viewedBacker ? viewedBacker.transaction_amount : ""
+  );
 
   // Category UseStates
 
@@ -179,6 +182,7 @@ const Table = ({
       setPledgeMoney(viewedBacker.pledge_money);
       setBackerDescription(viewedBacker.backers_description);
       setEstimatedDeliveryDate(viewedBacker.estimated_delivery_date);
+      setTransactionAmount(viewedBacker.transaction_amount);
     } else if (modalType === "ADD") {
       setOrderNumber("");
       setMemberName("");
@@ -188,6 +192,7 @@ const Table = ({
       setPledgeMoney("");
       setBackerDescription("");
       setEstimatedDeliveryDate(null);
+      setTransactionAmount("");
     }
   }, [viewedBacker, modalType]);
 
@@ -299,6 +304,7 @@ const Table = ({
         pledge_money: pledgeMoney,
         backers_description: backerDescription,
         estimated_delivery_date: estimatedDeliveryDate,
+        transaction_amount: transactionAmount,
       },
     },
     onCompleted(res) {
@@ -329,6 +335,7 @@ const Table = ({
         pledge_money: pledgeMoney,
         backers_description: backerDescription,
         estimated_delivery_date: estimatedDeliveryDate,
+        transaction_amount: transactionAmount,
       },
     },
     onCompleted(res) {
@@ -897,6 +904,16 @@ const Table = ({
                 className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white appearance-none pr-8"
                 value={estimatedDeliveryDate}
                 onChange={(e) => setEstimatedDeliveryDate(e.target.value)}
+              />
+            </div>
+            <div className="flex flex-col mx-auto md:w-1/2 px-2 mb-4 -ml-2 pt-2">
+              <label className="text-xs font-sailec font-semibold mb-2">
+                Transaction Amount
+              </label>
+              <input
+                value={transactionAmount}
+                onChange={(e) => setTransactionAmount(e.target.value)}
+                className="w-full px-3 py-2 border-[1px] border-[#202124] rounded-md bg-white"
               />
             </div>
           </>

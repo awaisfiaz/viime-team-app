@@ -77,6 +77,7 @@ export const INSERT_BACKER = gql`
       pledge_money
       backers_description
       estimated_delivery_date
+      transaction_amount
     }
   }
 `;
@@ -93,6 +94,7 @@ export const UPDATE_BACKER = gql`
       pledge_money
       backers_description
       estimated_delivery_date
+      transaction_amount
     }
   }
 `;
@@ -135,7 +137,7 @@ export const DELETE_CATEGORY = gql`
 
 export const DELETE_PROJECT_BACKER = gql`
   mutation DeleteProjectBacker($backer_id: Int!) {
-    delete_projectbackers(where: {backer_id: {_eq: $backer_id}}) {
+    delete_projectbackers(where: { backer_id: { _eq: $backer_id } }) {
       affected_rows
     }
   }

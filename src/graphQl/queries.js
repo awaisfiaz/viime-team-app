@@ -40,6 +40,7 @@ export const BACKER_QUERY = gql`
       pledge_money
       backers_description
       estimated_delivery_date
+      transaction_amount
     }
   }
 `;
