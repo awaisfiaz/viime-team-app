@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import CrossIcon from "./icons/CrossIcon";
 import { useNavigate } from "react-router-dom";
+import { DELETE_PROJECT_BACKER } from "../graphQl/mutations";
+import { useMutation } from "@apollo/client";
 
 const Modal = ({
   showModal,
@@ -16,6 +18,7 @@ const Modal = ({
   createCategory,
   updateCategory,
   deleteCategory,
+  toDeleteBackerId,
   projectCategoryFile,
   uploadImage,
   imageUrl,
@@ -24,6 +27,7 @@ const Modal = ({
 }) => {
   const navigate = useNavigate();
   const [isModalSubmitted, setIsModalSubmitted] = useState(false);
+  const [deleteProjectBacker] = useMutation(DELETE_PROJECT_BACKER);
 
   const handlers = {
     PROJECTS: {
@@ -69,7 +73,18 @@ const Modal = ({
     handleUpload();
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    if (tableType === "BACKERS") {
+      try {
+        await deleteProjectBacker({
+          variables: { backer_id: toDeleteBackerId },
+        });
+        handlers[tableType]?.DELETE?.();
+      } catch (error) {
+        console.log(error);
+      }
+      handleClose();
+    }
     handlers[tableType]?.DELETE?.();
     handleClose();
   };

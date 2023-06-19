@@ -141,6 +141,7 @@ const Backers = () => {
             viewedBackerId={viewedBackerId}
             viewedBacker={viewedBacker?.backers_by_pk}
             deleteBacker={deleteBacker}
+            toDeleteBackerId={toDeleteBackerId}
             setToast={setToast}
           />
         </div>

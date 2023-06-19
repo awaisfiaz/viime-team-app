@@ -61,6 +61,7 @@ const Table = ({
   viewedCategoryId,
   viewedCategory,
   deleteCategory,
+  toDeleteBackerId,
   setToast,
 }) => {
   // Projects UseSates
@@ -503,6 +504,7 @@ const Table = ({
         createCategory={createCategory}
         updateCategory={updateCategory}
         deleteCategory={deleteCategory}
+        toDeleteBackerId={toDeleteBackerId}
         projectCategoryFile={projectCategoryFile}
         uploadImage={uploadImage}
         imageUrl={imageUrl}

@@ -132,3 +132,11 @@ export const DELETE_CATEGORY = gql`
     }
   }
 `;
+
+export const DELETE_PROJECT_BACKER = gql`
+  mutation DeleteProjectBacker($backer_id: Int!) {
+    delete_projectbackers(where: {backer_id: {_eq: $backer_id}}) {
+      affected_rows
+    }
+  }
+`;
